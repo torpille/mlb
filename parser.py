@@ -12,7 +12,7 @@ from gamelinks import gamelinks
 
 
 # db_config_line = 'sqlite:///db.sqlite'
-db_config_line = 'mysql+pymysql://admin:admin@127.0.0.1:3306/mlb'
+db_config_line = 'mysql+pymysql://admin:admin@127.0.0.1:3306/espn_mlb'
 def get_html(url):
     r = requests.get(url, timeout = (100, 100))
     return r.text
