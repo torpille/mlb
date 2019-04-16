@@ -7,13 +7,13 @@ from models import Base, Game
 from dateutil import parser
 from sortedcontainers import SortedSet
 import numpy as np
-# from gamelinks import gamelinks
-gamelinks = ['http://www.espn.com/mlb/game?gameId=401075835']
+from gamelinks import gamelinks
+# gamelinks = ['http://www.espn.com/mlb/game?gameId=401075835']
 
 
 
-db_config_line = 'sqlite:///db.sqlite'
-# db_config_line = 'mysql+pymysql://admin:admin@127.0.0.1:3306/espn_mlb'
+# db_config_line = 'sqlite:///db.sqlite'
+db_config_line = 'mysql+pymysql://admin:admin@127.0.0.1:3306/espn_mlb'
 def get_html(url):
     r = requests.get(url, timeout = (100, 100))
     return r.text
