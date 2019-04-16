@@ -6,8 +6,9 @@ from sqlalchemy.orm import sessionmaker
 from models import Base, Game
 from dateutil import parser
 from sortedcontainers import SortedSet
+import numpy as np
 from gamelinks import gamelinks
-
+# gamelinks = ['http://www.espn.com/mlb/game?gameId=401074927']
 
 
 
@@ -93,7 +94,8 @@ def add_games_to_db(url, session):
     game.home_last_games = home_last_games
 
 
-   
+    visiting_pitchers = [[''] * 3 for i in range(9)]
+    home_pitchers = [[''] * 3 for i in range(9)]
     pitchers_block = soup.find_all(class_ = 'stats-wrap stats-wrap--post')
     if pitchers_block:
         pitchers_block = pitchers_block[1:4:2] 
@@ -111,22 +113,47 @@ def add_games_to_db(url, session):
             
         def get_pitchers(current_team):
             pitchers = []
+            pitcher_no = 0
             for t_link in current_team:
                 pitcher_html = get_html(t_link)
                 p_soup = BeautifulSoup(pitcher_html, 'html5lib')
                 p_name = p_soup.find('h1').text
                 if p_name != 'MLB Players':
+                    if pitcher_no == 9:
+                    	break
                     p_data = p_soup.find(class_='player-metadata floatleft')
-                    birth_date = str(p_data).split('/span>')[1].split(' (')[0]
+                    date = str(p_data).split('/span>')[1].split(' (')[0]
+                    birth_date = date_format(date).strip()
+                    birth_date = birth_date.replace(' ', '-')
                     birth_place = str(p_data).split('/span>')[2].split('<')[0]
-                    pitcher = p_name + ' (' + birth_date + ', ' + birth_place + ')'
+                    pitcher = []
+                    pitcher.extend((p_name, birth_date, birth_place))
                     pitchers.append(pitcher)
-            return ', '.join(pitchers)
-        game.visiting_pitchers = get_pitchers(teams_links[0])
-        game.home_pitchers = get_pitchers(teams_links[1])
-    else:
-        game.visiting_pitchers = 'no information'
-        game.home_pitchers = 'no information'
+                    pitcher_no += 1
+            return pitchers
+        
+        visiting_pitchers_data = get_pitchers(teams_links[0])
+        for i in range(len(visiting_pitchers_data)): 
+            for j in range(3): 
+                visiting_pitchers[i][j] = visiting_pitchers[i][j] + visiting_pitchers_data[i][j] 
+        
+        home_pitchers_data = get_pitchers(teams_links[1])
+        for i in range(len(home_pitchers_data)): 
+            for j in range(3): 
+                home_pitchers[i][j] = home_pitchers[i][j] + home_pitchers_data[i][j] 
+        
+    visiting_pitchers_list = []
+    for i in range(9):
+        for j in range(3):
+            visiting_pitchers_list.append(visiting_pitchers[i][j])
+    game.visiting_pitcher1_name, game.visiting_pitcher1_birthdate, game.visiting_pitcher1_birthplace, game.visiting_pitcher2_name, game.visiting_pitcher2_birthdate, game.visiting_pitcher2_birthplace, game.visiting_pitcher3_name, game.visiting_pitcher3_birthdate, game.visiting_pitcher3_birthplace, game.visiting_pitcher4_name, game.visiting_pitcher4_birthdate, game.visiting_pitcher4_birthplace, game.visiting_pitcher5_name, game.visiting_pitcher5_birthdate, game.visiting_pitcher5_birthplace, game.visiting_pitcher6_name, game.visiting_pitcher6_birthdate, game.visiting_pitcher6_birthplace, game.visiting_pitcher7_name, game.visiting_pitcher7_birthdate, game.visiting_pitcher7_birthplace,game.visiting_pitcher8_name, game.visiting_pitcher8_birthdate, game.visiting_pitcher8_birthplace,  game.visiting_pitcher9_name, game.visiting_pitcher9_birthdate, game.visiting_pitcher9_birthplace = visiting_pitchers_list
+        
+    home_pitchers_list = []
+    for i in range(9):
+        for j in range(3):
+            home_pitchers_list.append(home_pitchers[i][j])
+    game.home_pitcher1_name, game.home_pitcher1_birthdate, game.home_pitcher1_birthplace, game.home_pitcher2_name, game.home_pitcher2_birthdate, game.home_pitcher2_birthplace, game.home_pitcher3_name, game.home_pitcher3_birthdate, game.home_pitcher3_birthplace, game.home_pitcher4_name, game.home_pitcher4_birthdate, game.home_pitcher4_birthplace, game.home_pitcher5_name, game.home_pitcher5_birthdate, game.home_pitcher5_birthplace, game.home_pitcher6_name, game.home_pitcher6_birthdate, game.home_pitcher6_birthplace, game.home_pitcher7_name, game.home_pitcher7_birthdate, game.home_pitcher7_birthplace,game.home_pitcher8_name, game.home_pitcher8_birthdate, game.home_pitcher8_birthplace,  game.home_pitcher9_name, game.home_pitcher9_birthdate, game.home_pitcher9_birthplace = home_pitchers_list
+
 
 
     game.visiting_long_name, game.visiting_short_name, game.visiting_full_name, game.visiting_record = get_team_info(teams[0])
@@ -136,6 +163,23 @@ def add_games_to_db(url, session):
     session.add(game)
     session.commit()
     print('Done')
+def date_format(date):
+	d = date.split(',')
+	d.reverse()
+	word_date =' '.join(d)
+	word_month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+	num_month = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+	for i in range(12):
+		a =(change_name(word_date, word_month[i], num_month[i]))
+		if a != None:
+			return a
+	
+def change_name(str, old, new):
+	i = str.find(old)
+	if i > 0:
+		old_len = len(old)
+		str = str[:i] + new + str[i+old_len:]
+		return str
 
 
 def main():
