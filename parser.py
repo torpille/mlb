@@ -127,16 +127,16 @@ def add_games_to_db(url, session):
                         home_pitchers[i][j] = home_pitchers[i][j] + home_pitchers_data[i][j] 
                 
             visiting_pitchers_list = []
-            for i in range(9):
+            for i in range(1):
                 for j in range(3):
                     visiting_pitchers_list.append(visiting_pitchers[i][j])
-            game.visiting_pitcher1_name, game.visiting_pitcher1_birthdate, game.visiting_pitcher1_birthplace, game.visiting_pitcher2_name, game.visiting_pitcher2_birthdate, game.visiting_pitcher2_birthplace, game.visiting_pitcher3_name, game.visiting_pitcher3_birthdate, game.visiting_pitcher3_birthplace, game.visiting_pitcher4_name, game.visiting_pitcher4_birthdate, game.visiting_pitcher4_birthplace, game.visiting_pitcher5_name, game.visiting_pitcher5_birthdate, game.visiting_pitcher5_birthplace, game.visiting_pitcher6_name, game.visiting_pitcher6_birthdate, game.visiting_pitcher6_birthplace, game.visiting_pitcher7_name, game.visiting_pitcher7_birthdate, game.visiting_pitcher7_birthplace,game.visiting_pitcher8_name, game.visiting_pitcher8_birthdate, game.visiting_pitcher8_birthplace,  game.visiting_pitcher9_name, game.visiting_pitcher9_birthdate, game.visiting_pitcher9_birthplace = visiting_pitchers_list
+            game.visiting_pitcher_name, game.visiting_pitcher_birthdate, game.visiting_pitcher_birthplace = visiting_pitchers_list[0]
                 
             home_pitchers_list = []
-            for i in range(9):
+            for i in range():
                 for j in range(3):
                     home_pitchers_list.append(home_pitchers[i][j])
-            game.home_pitcher1_name, game.home_pitcher1_birthdate, game.home_pitcher1_birthplace, game.home_pitcher2_name, game.home_pitcher2_birthdate, game.home_pitcher2_birthplace, game.home_pitcher3_name, game.home_pitcher3_birthdate, game.home_pitcher3_birthplace, game.home_pitcher4_name, game.home_pitcher4_birthdate, game.home_pitcher4_birthplace, game.home_pitcher5_name, game.home_pitcher5_birthdate, game.home_pitcher5_birthplace, game.home_pitcher6_name, game.home_pitcher6_birthdate, game.home_pitcher6_birthplace, game.home_pitcher7_name, game.home_pitcher7_birthdate, game.home_pitcher7_birthplace,game.home_pitcher8_name, game.home_pitcher8_birthdate, game.home_pitcher8_birthplace,  game.home_pitcher9_name, game.home_pitcher9_birthdate, game.home_pitcher9_birthplace = home_pitchers_list
+            game.home_pitcher_name, game.home_pitcher_birthdate, game.home_pitcher_birthplace = home_pitchers_list[0]
 
 
 
