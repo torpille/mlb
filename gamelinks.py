@@ -18,6 +18,7 @@ def find_game_links(teamlink):
 		for elem in elems:
 			if elem.find('http://www.espn.com/mlb/game?gameId=') != -1:
 				game_links.add(elem)
+				print(elem)
 	
 def find_team_links():
 	URL = 'http://www.espn.com/mlb/teams'
@@ -35,6 +36,5 @@ def find_team_links():
 
 find_team_links()
 gamelinks = SortedSet(game_links)
-for link in gamelinks:
-	print(link)
+
 
