@@ -48,14 +48,12 @@ def add_games_to_db(url, session):
             teams = soup.find_all(class_="team-info")
             loc = soup.find(class_='icon-font-before icon-location-solid-before')
             city = loc.text.split(',')[0].split('   ')[-1].strip()
-            print(city)
             if city:
                 game.city = city
             else:
                 city = loc.text.strip()
                 game.city = city
             state = loc.text.split(',')[-1].split('\n')[0].strip()
-            print(state)
             if state:
                 game.state = state
             else:
@@ -108,24 +106,7 @@ def add_games_to_db(url, session):
                     pitchers.append( href['href'])
                 visiting_pitcher_list = get_pitcher(pitchers[-2])
                 home_pitcher_list = get_pitcher(pitchers[-1])
-                # pitchers_block = pitchers_block[1:4:2] 
 
-                # teams_links = []
-                # for pitchers in pitchers_block:
-                #     current_team_links = []    
-                #     pitchers_links = pitchers.find_all('a')
-                #     for pitcher_link in pitchers_links:
-                #         p_link = str(pitcher_link)
-                #         a=p_link.find('http://')
-                #         b=p_link.find('" name')
-                #         current_team_links.append(p_link[a:b])
-                #     teams_links.append(current_team_links)
-                    
-                     
-                # visiting_pitcher_list = get_pitchers(teams_links[0])
-                # home_pitcher_list = get_pitchers(teams_links[1])
-                # print('pb')
-                # print(pitchers)
             else:
                 visiting_pitcher_list = visiting_pitchers
                 home_pitcher_list = home_pitchers
