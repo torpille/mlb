@@ -114,12 +114,12 @@ def add_games_to_db(url, session):
                         current_team_links.append(p_link[a:b])
                     teams_links.append(current_team_links)
                     
-                
-                
+                     
                 visiting_pitcher_list = get_pitchers(teams_links[0])
-               
-                
                 home_pitcher_list = get_pitchers(teams_links[1])
+            else:
+                visiting_pitcher_list = visiting_pitchers
+                home_pitcher_list = home_pitchers
 
                 
 
