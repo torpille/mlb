@@ -8,12 +8,12 @@ from dateutil import parser
 from sortedcontainers import SortedSet
 import numpy as np
 from gamelinks import gamelinks
-# gamelinks = ['http://www.espn.com/mlb/game?gameId=401075835']
+# gamelinks = ['http://www.espn.com/mlb/game?gameId=401075084']
 
 
 
-# db_config_line = 'sqlite:///db.sqlite'
-db_config_line = 'mysql+pymysql://admin:admin@127.0.0.1:3306/espn_mlb'
+db_config_line = 'sqlite:///db.sqlite'
+# db_config_line = 'mysql+pymysql://admin:admin@127.0.0.1:3306/espn_mlb'
 def get_html(url):
     r = requests.get(url, timeout = (100, 100))
     return r.text
@@ -47,13 +47,15 @@ def add_games_to_db(url, session):
 
             teams = soup.find_all(class_="team-info")
             loc = soup.find(class_='icon-font-before icon-location-solid-before')
-            city = loc.text.split(',')[0].split('   ')[-1]
+            city = loc.text.split(',')[0].split('   ')[-1].strip()
+            print(city)
             if city:
                 game.city = city
             else:
                 city = loc.text.strip()
                 game.city = city
-            state = loc.text.split(',')[-1].split(' ')[0].strip()
+            state = loc.text.split(',')[-1].split('\n')[0].strip()
+            print(state)
             if state:
                 game.state = state
             else:
@@ -98,25 +100,32 @@ def add_games_to_db(url, session):
 
             visiting_pitchers = ['', '', '']
             home_pitchers = ['', '', '']
-            pitchers_block = soup.find_all(class_ = 'stats-wrap stats-wrap--post')
+            pitchers_block = soup.find(class_ = 'sub-module pitchers')
             
             if pitchers_block:
-                pitchers_block = pitchers_block[1:4:2] 
+                pitchers = []
+                for href in pitchers_block.find_all('a', href=True):
+                    pitchers.append( href['href'])
+                visiting_pitcher_list = get_pitcher(pitchers[-2])
+                home_pitcher_list = get_pitcher(pitchers[-1])
+                # pitchers_block = pitchers_block[1:4:2] 
 
-                teams_links = []
-                for pitchers in pitchers_block:
-                    current_team_links = []    
-                    pitchers_links = pitchers.find_all('a')
-                    for pitcher_link in pitchers_links:
-                        p_link = str(pitcher_link)
-                        a=p_link.find('http://')
-                        b=p_link.find('" name')
-                        current_team_links.append(p_link[a:b])
-                    teams_links.append(current_team_links)
+                # teams_links = []
+                # for pitchers in pitchers_block:
+                #     current_team_links = []    
+                #     pitchers_links = pitchers.find_all('a')
+                #     for pitcher_link in pitchers_links:
+                #         p_link = str(pitcher_link)
+                #         a=p_link.find('http://')
+                #         b=p_link.find('" name')
+                #         current_team_links.append(p_link[a:b])
+                #     teams_links.append(current_team_links)
                     
                      
-                visiting_pitcher_list = get_pitchers(teams_links[0])
-                home_pitcher_list = get_pitchers(teams_links[1])
+                # visiting_pitcher_list = get_pitchers(teams_links[0])
+                # home_pitcher_list = get_pitchers(teams_links[1])
+                # print('pb')
+                # print(pitchers)
             else:
                 visiting_pitcher_list = visiting_pitchers
                 home_pitcher_list = home_pitchers
@@ -140,23 +149,23 @@ def add_games_to_db(url, session):
         else:
             print("Page didn't load")
 
-def get_pitchers(current_team):
+def get_pitcher(link):
                     
-                    for t_link in current_team:
-                        pitcher_html = get_html(t_link)
-                        p_soup = BeautifulSoup(pitcher_html, 'html5lib')
-                        p_name = p_soup.find('h1').text
-                        if p_name != 'MLB Players':
-                            
-                            p_data = p_soup.find(class_='player-metadata floatleft')
-                            date = str(p_data).split('/span>')[1].split(' (')[0]
-                            birth_date = date_format(date).strip()
-                            birth_date = birth_date.replace(' ', '-')
-                            birth_place = str(p_data).split('/span>')[2].split('<')[0]
-                            pitcher = []
-                            pitcher.extend((p_name, birth_date, birth_place))
-                            
-                    return pitcher
+              
+    pitcher_html = get_html(link)
+    p_soup = BeautifulSoup(pitcher_html, 'html5lib')
+    p_name = p_soup.find('h1').text
+    if p_name != 'MLB Players':
+        
+        p_data = p_soup.find(class_='player-metadata floatleft')
+        date = str(p_data).split('/span>')[1].split(' (')[0]
+        birth_date = date_format(date).strip()
+        birth_date = birth_date.replace(' ', '-')
+        birth_place = str(p_data).split('/span>')[2].split('<')[0]
+        pitcher = []
+        pitcher.extend((p_name, birth_date, birth_place))
+        
+    return pitcher
 
 def date_format(date):
     d = date.split(',')
