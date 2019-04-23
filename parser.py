@@ -96,8 +96,8 @@ def add_games_to_db(url, session):
             game.home_last_games = home_last_games
 
 
-            visiting_pitchers = [[''] * 3 for i in range(9)]
-            home_pitchers = [[''] * 3 for i in range(9)]
+            visiting_pitchers = [[''] * 3 for i in range(1)]
+            home_pitchers = [[''] * 3 for i in range(1)]
             pitchers_block = soup.find_all(class_ = 'stats-wrap stats-wrap--post')
             
             if pitchers_block:
@@ -117,14 +117,12 @@ def add_games_to_db(url, session):
                 
                 
                 visiting_pitchers_data = get_pitchers(teams_links[0])
-                for i in range(len(visiting_pitchers_data)): 
-                    for j in range(3): 
-                        visiting_pitchers[i][j] = visiting_pitchers[i][j] + visiting_pitchers_data[i][j] 
+                for j in range(3): 
+                    visiting_pitchers[0][j] = visiting_pitchers[0][j] + visiting_pitchers_data[0][j] 
                 
                 home_pitchers_data = get_pitchers(teams_links[1])
-                for i in range(len(home_pitchers_data)): 
-                    for j in range(3): 
-                        home_pitchers[i][j] = home_pitchers[i][j] + home_pitchers_data[i][j] 
+                for j in range(3): 
+                    home_pitchers[0][j] = home_pitchers[0][j] + home_pitchers_data[0][j] 
                 
             visiting_pitchers_list = []
             for i in range(1):
@@ -133,7 +131,7 @@ def add_games_to_db(url, session):
             game.visiting_pitcher_name, game.visiting_pitcher_birthdate, game.visiting_pitcher_birthplace = visiting_pitchers_list[0]
                 
             home_pitchers_list = []
-            for i in range():
+            for i in range(1):
                 for j in range(3):
                     home_pitchers_list.append(home_pitchers[i][j])
             game.home_pitcher_name, game.home_pitcher_birthdate, game.home_pitcher_birthplace = home_pitchers_list[0]
