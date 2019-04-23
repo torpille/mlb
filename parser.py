@@ -96,8 +96,8 @@ def add_games_to_db(url, session):
             game.home_last_games = home_last_games
 
 
-            visiting_pitchers = [[''] * 3 for i in range(1)]
-            home_pitchers = [[''] * 3 for i in range(1)]
+            visiting_pitchers = ['', '', '']
+            home_pitchers = ['', '', '']
             pitchers_block = soup.find_all(class_ = 'stats-wrap stats-wrap--post')
             
             if pitchers_block:
