@@ -142,7 +142,7 @@ def add_games_to_db(url, session):
 
 def get_pitchers(current_team):
                     
-                    for t_link in current_team[1]:
+                    for t_link in current_team:
                         pitcher_html = get_html(t_link)
                         p_soup = BeautifulSoup(pitcher_html, 'html5lib')
                         p_name = p_soup.find('h1').text
