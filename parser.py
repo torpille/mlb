@@ -116,25 +116,17 @@ def add_games_to_db(url, session):
                     
                 
                 
-                visiting_pitchers_data = get_pitchers(teams_links[0])
-                for j in range(3): 
-                    visiting_pitchers[0][j] = visiting_pitchers[0][j] + visiting_pitchers_data[0][j] 
+                visiting_pitcher_list = get_pitchers(teams_links[0])
+               
                 
-                home_pitchers_data = get_pitchers(teams_links[1])
-                for j in range(3): 
-                    home_pitchers[0][j] = home_pitchers[0][j] + home_pitchers_data[0][j] 
+                home_pitcher_list = get_pitchers(teams_links[1])
+
                 
-            visiting_pitchers_list = []
-            for i in range(1):
-                for j in range(3):
-                    visiting_pitchers_list.append(visiting_pitchers[i][j])
-            game.visiting_pitcher_name, game.visiting_pitcher_birthdate, game.visiting_pitcher_birthplace = visiting_pitchers_list[0]
+
+            game.visiting_pitcher_name, game.visiting_pitcher_birthdate, game.visiting_pitcher_birthplace = visiting_pitcher_list
                 
-            home_pitchers_list = []
-            for i in range(1):
-                for j in range(3):
-                    home_pitchers_list.append(home_pitchers[i][j])
-            game.home_pitcher_name, game.home_pitcher_birthdate, game.home_pitcher_birthplace = home_pitchers_list[0]
+
+            game.home_pitcher_name, game.home_pitcher_birthdate, game.home_pitcher_birthplace = home_pitcher_list
 
 
 
@@ -149,15 +141,13 @@ def add_games_to_db(url, session):
             print("Page didn't load")
 
 def get_pitchers(current_team):
-                    pitchers = []
-                    pitcher_no = 0
-                    for t_link in current_team:
+                    
+                    for t_link in current_team[1]:
                         pitcher_html = get_html(t_link)
                         p_soup = BeautifulSoup(pitcher_html, 'html5lib')
                         p_name = p_soup.find('h1').text
                         if p_name != 'MLB Players':
-                            if pitcher_no == 9:
-                                break
+                            
                             p_data = p_soup.find(class_='player-metadata floatleft')
                             date = str(p_data).split('/span>')[1].split(' (')[0]
                             birth_date = date_format(date).strip()
@@ -165,9 +155,8 @@ def get_pitchers(current_team):
                             birth_place = str(p_data).split('/span>')[2].split('<')[0]
                             pitcher = []
                             pitcher.extend((p_name, birth_date, birth_place))
-                            pitchers.append(pitcher)
-                            pitcher_no += 1
-                    return pitchers
+                            
+                    return pitcher
 
 def date_format(date):
     d = date.split(',')
