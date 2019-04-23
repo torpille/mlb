@@ -164,8 +164,10 @@ def get_pitcher(link):
         birth_place = str(p_data).split('/span>')[2].split('<')[0]
         pitcher = []
         pitcher.extend((p_name, birth_date, birth_place))
+    else:
+        pitcher = ['', '', '']
         
-        return pitcher
+    return pitcher
 
 def date_format(date):
     d = date.split(',')
