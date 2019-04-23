@@ -105,13 +105,13 @@ def add_games_to_db(url, session):
 
                 teams_links = []
                 for pitchers in pitchers_block:
-                    current_team_links = set()
+                    current_team_links = []    
                     pitchers_links = pitchers.find_all('a')
                     for pitcher_link in pitchers_links:
                         p_link = str(pitcher_link)
                         a=p_link.find('http://')
                         b=p_link.find('" name')
-                        current_team_links.add(p_link[a:b])
+                        current_team_links.append(p_link[a:b])
                     teams_links.append(current_team_links)
                     
                 
