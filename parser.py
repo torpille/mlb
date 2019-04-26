@@ -153,11 +153,12 @@ def get_pitcher(link):
     return pitcher
 
 def date_format(date):
+    print(date)
     wrong_num = [' 1,', ' 2,', ' 3,', ' 4,', ' 5,', ' 6,', ' 7,', ' 8,', ' 9,']
     right_num = ['01','02','03','04','05', '06', '07', '08', '09']
     for i in range(9):
-        date = change_name(date, wrong_num[i], right_num[i])
-    d = date.split(',')
+        dat = change_name(date, wrong_num[i], right_num[i])
+    d = dat.split(',')
     d.reverse()
     word_date ='-'.join(d)
     word_month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
