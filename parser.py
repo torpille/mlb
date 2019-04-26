@@ -141,6 +141,7 @@ def get_pitcher(link):
         p_data = p_soup.find(class_='player-metadata floatleft')
         date = str(p_data).split('/span>')[1].split(' (')[0]
         birth_date = date_format(date).strip()
+        print(birth_date)
         birth_place = str(p_data).split('/span>')[2].split('<')[0]
         birth_city = birth_place.split(',')[0]
         birth_state = birth_place.split(', ')[1]
@@ -153,12 +154,8 @@ def get_pitcher(link):
     return pitcher
 
 def date_format(date):
-    print(date)
-    wrong_num = [' 1,', ' 2,', ' 3,', ' 4,', ' 5,', ' 6,', ' 7,', ' 8,', ' 9,']
-    right_num = ['01','02','03','04','05', '06', '07', '08', '09']
-    for i in range(9):
-        dat = change_name(date, wrong_num[i], right_num[i])
-    d = dat.split(',')
+    num_date = num_format(date)
+    d = num_date.split(',')
     d.reverse()
     word_date ='-'.join(d)
     word_month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
@@ -167,7 +164,13 @@ def date_format(date):
         a =(change_name(word_date, word_month[i], num_month[i]))
         if a != None:
             return a
-    
+def num_format(num):
+    wrong_num = [' 1,', ' 2,', ' 3,', ' 4,', ' 5,', ' 6,', ' 7,', ' 8,', ' 9,']
+    right_num = ['01,','02,','03,','04,','05,', '06,', '07,', '08,', '09,']
+    for i in range(9):
+        result = (change_name(num, wrong_num[i], right_num[i]))
+        if result != None:
+            return result
 def change_name(str, old, new):
     print(str, old, new)
     i = str.find(old)
