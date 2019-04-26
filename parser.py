@@ -171,6 +171,7 @@ def num_format(num):
         result = (change_name(num, wrong_num[i], right_num[i]))
         if result != None:
             return result
+    return num
 def change_name(str, old, new):
     print(str, old, new)
     i = str.find(old)
