@@ -97,7 +97,7 @@ def add_games_to_db(url, session):
 
 
             visiting_pitchers = ['', '', '', '']
-            home_pitchers = ['', '', ''. '']
+            home_pitchers = ['', '', '', '']
             pitchers_block = soup.find(class_ = 'sub-module pitchers')
             
             if pitchers_block:
