@@ -105,11 +105,15 @@ def add_games_to_db(url, session):
                 home_pitcher = pitchers_block.find_all('tr')[2]
                 v_p = visiting_pitcher.find('a',href=True)
                 if v_p:
+                    v_p = v_p['href']
+                    print(v_p)
                     visiting_pitcher_list = get_pitcher(v_p)
                 else:
                     visiting_pitcher_list= visiting_pitchers
                 h_p = home_pitcher.find('a', href=True)
                 if h_p:
+                    h_p = h_p['href']
+                    print(h_p)
                     home_pitcher_list = get_pitcher(h_p)
                 else:
                     home_pitcher_list = home_pitchers
