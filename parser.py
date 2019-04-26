@@ -168,6 +168,7 @@ def date_format(date):
             return a
     
 def change_name(str, old, new):
+    print(str, old, new)
     i = str.find(old)
     if i > 0:
         old_len = len(old)
