@@ -162,8 +162,12 @@ def get_pitcher(link):
         birth_date = date_format(date).strip().replace(' ', '-')
         print(birth_date)
         birth_place = str(p_data).split('/span>')[2].split('<')[0]
-        birth_city = birth_place.split(',')[0]
-        birth_state = birth_place.split(', ')[1]
+        if len(birth_place.split(',')) >= 2:
+            birth_city = birth_place.split(',')[-2]
+            birth_state = birth_place.split(', ')[-1]
+        else:
+            birth_city = ' '
+            birth_state = birth_place
 
         pitcher = []
         pitcher.extend((p_name, birth_date, birth_city, birth_state))
