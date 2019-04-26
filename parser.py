@@ -104,7 +104,10 @@ def add_games_to_db(url, session):
                 pitchers = []
                 for href in pitchers_block.find_all('a', href=True):
                     pitchers.append( href['href'])
-                visiting_pitcher_list = get_pitcher(pitchers[-2])
+                if pitchers[-2]:
+                    visiting_pitcher_list = get_pitcher(pitchers[-2])
+                else:
+                    visiting_pitcher_list= visiting_pitchers
                 home_pitcher_list = get_pitcher(pitchers[-1])
 
             else:
@@ -140,7 +143,7 @@ def get_pitcher(link):
         
         p_data = p_soup.find(class_='player-metadata floatleft')
         date = str(p_data).split('/span>')[1].split(' (')[0]
-        birth_date = date_format(date).strip()
+        birth_date = date_format(date).strip().replace(' ', '-')
         print(birth_date)
         birth_place = str(p_data).split('/span>')[2].split('<')[0]
         birth_city = birth_place.split(',')[0]
@@ -157,7 +160,7 @@ def date_format(date):
     num_date = num_format(date)
     d = num_date.split(',')
     d.reverse()
-    word_date =('-'.join(d)).replace(' ', '-')
+    word_date = '-'.join(d)
     word_month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
     num_month = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
     for i in range(12):
