@@ -101,14 +101,26 @@ def add_games_to_db(url, session):
             pitchers_block = soup.find(class_ = 'sub-module pitchers')
             
             if pitchers_block:
-                pitchers = []
-                for href in pitchers_block.find_all('a', href=True):
-                    pitchers.append( href['href'])
-                if pitchers[-2]:
-                    visiting_pitcher_list = get_pitcher(pitchers[-2])
+                visiting_pitcher = pitchers_block.find_all('tr')[1]
+                home_pitcher = pitchers_block.find_all('tr')[2]
+                v_p = visiting_pitcher.find('a',href=True)
+                if v_p:
+                    visiting_pitcher_list = get_pitcher(v_p)
                 else:
                     visiting_pitcher_list= visiting_pitchers
-                home_pitcher_list = get_pitcher(pitchers[-1])
+                h_p = home_pitcher.find('a', href=True)
+                if h_p:
+                    home_pitcher_list = get_pitcher(h_p)
+                else:
+                    home_pitcher_list = home_pitchers
+                # pitchers = []
+                # for href in pitchers_block.find_all('a', href=True):
+                #     pitchers.append( href['href'])
+                # if pitchers[-2]:
+                #     visiting_pitcher_list = get_pitcher(pitchers[-2])
+                # else:
+                #     visiting_pitcher_list= visiting_pitchers
+                # home_pitcher_list = get_pitcher(pitchers[-1])
 
             else:
                 visiting_pitcher_list = visiting_pitchers
@@ -176,7 +188,6 @@ def num_format(num):
             return result
     return num
 def change_name(str, old, new):
-    print(str, old, new)
     i = str.find(old)
     if i > 0:
         old_len = len(old)
