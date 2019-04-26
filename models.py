@@ -24,9 +24,11 @@ class Game(Base):
     visiting_last_games = Column(String(200), nullable=True)
     visiting_pitcher_name = Column(String(200), nullable=True)
     visiting_pitcher_birthdate = Column(String(200), nullable=True)
-    visiting_pitcher_birthplace = Column(String(200), nullable=True)
+    visiting_pitcher_birth_city = Column(String(200), nullable=True)
+    visiting_pitcher_birth_state= Column(String(200), nullable=True)
      
     home_pitcher_name = Column(String(200), nullable=True)
     home_pitcher_birthdate = Column(String(200), nullable=True)
-    home_pitcher_birthplace = Column(String(200), nullable=True) 
+    home_pitcher_birth_city = Column(String(200), nullable=True) 
+    home_pitcher_birth_state = Column(String(200), nullable=True) 
 

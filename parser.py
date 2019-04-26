@@ -96,8 +96,8 @@ def add_games_to_db(url, session):
             game.home_last_games = home_last_games
 
 
-            visiting_pitchers = ['', '', '']
-            home_pitchers = ['', '', '']
+            visiting_pitchers = ['', '', '', '']
+            home_pitchers = ['', '', ''. '']
             pitchers_block = soup.find(class_ = 'sub-module pitchers')
             
             if pitchers_block:
@@ -113,10 +113,10 @@ def add_games_to_db(url, session):
 
                 
 
-            game.visiting_pitcher_name, game.visiting_pitcher_birthdate, game.visiting_pitcher_birthplace = visiting_pitcher_list
+            game.visiting_pitcher_name, game.visiting_pitcher_birthdate, game.visiting_pitcher_birth_city, game.visiting_pitcher_birth_state = visiting_pitcher_list
                 
 
-            game.home_pitcher_name, game.home_pitcher_birthdate, game.home_pitcher_birthplace = home_pitcher_list
+            game.home_pitcher_name, game.home_pitcher_birthdate, game.home_pitcher_birth_city, game.home_pitcher_birth_state = home_pitcher_list
 
 
 
@@ -141,20 +141,26 @@ def get_pitcher(link):
         p_data = p_soup.find(class_='player-metadata floatleft')
         date = str(p_data).split('/span>')[1].split(' (')[0]
         birth_date = date_format(date).strip()
-        birth_date = birth_date.replace(' ', '-')
         birth_place = str(p_data).split('/span>')[2].split('<')[0]
+        birth_city = birth_place.split(',')[0]
+        birth_state = birth_place.split(', ')[1]
+
         pitcher = []
-        pitcher.extend((p_name, birth_date, birth_place))
+        pitcher.extend((p_name, birth_date, birth_city, birth_state))
     else:
-        pitcher = ['', '', '']
+        pitcher = ['', '', '', '']
         
     return pitcher
 
 def date_format(date):
+    for i in range(9):
+        date = change_name(date, wrong_num[i], right_num[i])
     d = date.split(',')
     d.reverse()
-    word_date =' '.join(d)
-    word_month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    word_date ='-'.join(d)
+    wrong_num = [' 1,', ' 2,', ' 3,', ' 4,', ' 5,', ' 6,', ' 7,', ' 8,', ' 9,']
+    right_num = ['01','02','03','04','05', '06', '07', '08', '09']
+    word_month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
     num_month = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
     for i in range(12):
         a =(change_name(word_date, word_month[i], num_month[i]))
