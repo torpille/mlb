@@ -106,25 +106,16 @@ def add_games_to_db(url, session):
             v_p = visiting_pitcher.find('a',href=True)
             if v_p:
                 v_p = v_p['href']
-                print(v_p)
                 visiting_pitcher_list = get_pitcher(v_p)
             else:
                 visiting_pitcher_list= visiting_pitchers
             h_p = home_pitcher.find('a', href=True)
             if h_p:
                 h_p = h_p['href']
-                print(h_p)
                 home_pitcher_list = get_pitcher(h_p)
             else:
                 home_pitcher_list = home_pitchers
-            # pitchers = []
-            # for href in pitchers_block.find_all('a', href=True):
-            #     pitchers.append( href['href'])
-            # if pitchers[-2]:
-            #     visiting_pitcher_list = get_pitcher(pitchers[-2])
-            # else:
-            #     visiting_pitcher_list= visiting_pitchers
-            # home_pitcher_list = get_pitcher(pitchers[-1])
+
 
         else:
             visiting_pitcher_list = visiting_pitchers
@@ -160,7 +151,6 @@ def get_pitcher(link):
         p_data = p_soup.find(class_='player-metadata floatleft')
         date = str(p_data).split('/span>')[1].split(' (')[0]
         birth_date = date_format(date).strip().replace(' ', '-')
-        print(birth_date)
         birth_place = str(p_data).split('/span>')[2].split('<')[0]
         if len(birth_place.split(',')) >= 2:
             birth_city = birth_place.split(',')[-2]
