@@ -214,7 +214,7 @@ def change_name(str, old, new):
 def main():
     
 
-    with Pool(30) as p:
+    with Pool(10) as p:
         p.map(add_games_to_db, gamelinks)
 
 if __name__ == '__main__':
