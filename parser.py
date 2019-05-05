@@ -6,19 +6,26 @@ from sqlalchemy.orm import sessionmaker
 from models import Base, Game
 from dateutil import parser
 from sortedcontainers import SortedSet
+from multiprocess import Pool
 import numpy as np
 from gamelinks import gamelinks
-# gamelinks = ['http://www.espn.com/mlb/game?gameId=401075084']
+# gamelinks = ['http://www.espn.com/mlb/game?gameId=401075260']
 
 
 
-# db_config_line = 'sqlite:///db.sqlite'
-db_config_line = 'mysql+pymysql://admin:admin@127.0.0.1:3306/espn_mlb'
+db_config_line = 'sqlite:///db.sqlite'
+# db_config_line = 'mysql+pymysql://admin:admin@127.0.0.1:3306/espn_mlb'
 def get_html(url):
     r = requests.get(url, timeout = (100, 100))
     return r.text
 
-def add_games_to_db(url, session):
+def add_games_to_db(url):
+    engine = create_engine(db_config_line)
+    if not database_exists(engine.url):
+        create_database(engine.url)
+    Base.metadata.create_all(engine)
+    Session = sessionmaker(bind=engine)
+    session = Session()
     def get_team_info(team):
         long_name = team.find(class_="long-name").text
         short_name = team.find(class_="short-name").text
@@ -96,8 +103,8 @@ def add_games_to_db(url, session):
         game.home_last_games = home_last_games
 
 
-        visiting_pitchers = ['', '', '', '']
-        home_pitchers = ['', '', '', '']
+        visiting_pitchers = ['', '', '', '', '', '', '', '', '', '', '', '']
+        home_pitchers = ['', '', '', '', '', '', '', '', '', '', '', '']
         pitchers_block = soup.find(class_ = 'sub-module pitchers')
         
         if pitchers_block:
@@ -123,10 +130,10 @@ def add_games_to_db(url, session):
 
             
 
-        game.visiting_pitcher_name, game.visiting_pitcher_birthdate, game.visiting_pitcher_birth_city, game.visiting_pitcher_birth_state = visiting_pitcher_list
+        game.visiting_pitcher_name, game.visiting_pitcher_birthdate, game.visiting_pitcher_birth_city, game.visiting_pitcher_birth_state, game.visiting_pitcher_2019_season_era, game.visiting_pitcher_2019_season_wl, game.visiting_pitcher_2019_season_so, game.visiting_pitcher_2019_season_whip, game.visiting_pitcher_career_era, game.visiting_pitcher_career_wl, game.visiting_pitcher_career_so, game.visiting_pitcher_career_whip = visiting_pitcher_list
             
 
-        game.home_pitcher_name, game.home_pitcher_birthdate, game.home_pitcher_birth_city, game.home_pitcher_birth_state = home_pitcher_list
+        game.home_pitcher_name, game.home_pitcher_birthdate, game.home_pitcher_birth_city, game.home_pitcher_birth_state,  game.home_pitcher_2019_season_era, game.home_pitcher_2019_season_wl, game.home_pitcher_2019_season_so, game.home_pitcher_2019_season_whip, game.home_pitcher_career_era, game.home_pitcher_career_wl, game.home_pitcher_career_so, game.home_pitcher_career_whip = home_pitcher_list
 
 
 
@@ -158,12 +165,23 @@ def get_pitcher(link):
         else:
             birth_city = ' '
             birth_state = birth_place
+        stats = p_soup.find(class_ ='header-stats')
+        # print(stats)
+ 
+        s19_era = stats.find_all('tr')[1].find_all('td')[0].text
+        s19_wl = stats.find_all('tr')[1].find_all('td')[1].text
+        s19_so = stats.find_all('tr')[1].find_all('td')[2].text
+        s19_whip = stats.find_all('tr')[1].find_all('td')[3].text
+        c_era = stats.find_all('tr')[3].find_all('td')[0].text
+        c_wl = stats.find_all('tr')[3].find_all('td')[1].text
+        c_so = stats.find_all('tr')[3].find_all('td')[2].text
+        c_whip = stats.find_all('tr')[3].find_all('td')[3].text
 
         pitcher = []
-        pitcher.extend((p_name, birth_date, birth_city, birth_state))
+        pitcher.extend((p_name, birth_date, birth_city, birth_state, s19_era, s19_wl, s19_so, s19_whip, c_era, c_wl, c_so, c_whip))
     else:
-        pitcher = ['', '', '', '']
-        
+        pitcher = ['', '', '', '', '', '', '', '', '', '', '', '']
+    # print(pitcher)
     return pitcher
 
 def date_format(date):
@@ -194,15 +212,10 @@ def change_name(str, old, new):
 
 
 def main():
-    engine = create_engine(db_config_line)
-    if not database_exists(engine.url):
-        create_database(engine.url)
-    Base.metadata.create_all(engine)
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    for link in gamelinks:
-        add_games_to_db(link, session)
-        print(link)
+    
+
+    with Pool(30) as p:
+        p.map(add_games_to_db, gamelinks)
 
 if __name__ == '__main__':
     main()

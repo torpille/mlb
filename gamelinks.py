@@ -1,11 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
+from multiprocess import Pool
 from sortedcontainers import SortedSet
 
 teamlinks = set()
 game_links = set()
 
 def find_game_links(teamlink):
+	print(teamlink)
 	URL = teamlink
 	current_page = requests.get(URL)
 	soup = BeautifulSoup(current_page.content, 'html.parser')
@@ -31,6 +33,9 @@ def find_team_links():
 		for elem in elems:
 			if elem.find('mlb/team/schedule') != -1:
 				teamlinks.add('http://www.espn.com' + elem)
+	print(teamlinks)
+	# with Pool(30) as p:
+	# 	p.map(find_game_links, teamlinks)
 	for link in teamlinks:
 		find_game_links(link)
 
