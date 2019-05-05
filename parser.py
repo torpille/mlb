@@ -19,13 +19,8 @@ def get_html(url):
     r = requests.get(url, timeout = (100, 100))
     return r.text
 
-def add_games_to_db(url):
-    engine = create_engine(db_config_line)
-    if not database_exists(engine.url):
-        create_database(engine.url)
-    Base.metadata.create_all(engine)
-    Session = sessionmaker(bind=engine)
-    session = Session()
+def add_games_to_db(url, session):
+    
     def get_team_info(team):
         long_name = team.find(class_="long-name").text
         short_name = team.find(class_="short-name").text
@@ -212,10 +207,18 @@ def change_name(str, old, new):
 
 
 def main():
+    engine = create_engine(db_config_line)
+    if not database_exists(engine.url):
+        create_database(engine.url)
+    Base.metadata.create_all(engine)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    for link in gamelinks:
+        add_games_to_db(link, session)
     
 
-    with Pool(10) as p:
-        p.map(add_games_to_db, gamelinks)
+    # with Pool(10) as p:
+    #     p.map(add_games_to_db, gamelinks)
 
 if __name__ == '__main__':
     main()
