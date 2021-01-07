@@ -7,7 +7,7 @@ cryptography==2.3.1
 dill==0.2.9
 html5lib==1.0.1
 idna==2.7
-lxml==4.2.5
+lxml==4.6.2
 multiprocess==0.70.7
 numpy==1.16.1
 pandas==0.24.1
